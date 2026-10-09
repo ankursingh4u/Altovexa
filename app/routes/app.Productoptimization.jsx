@@ -1,5 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useLoaderData, useFetcher, useRevalidator } from 'react-router';
+import { boundary } from '@shopify/shopify-app-react-router/server';
+import RouteError from '../components/RouteError';
 import { authenticate } from '../shopify.server';
 import { getBillingStateCached } from '../billing.server';
 import { getUsage, getRemaining } from '../usage.server';
@@ -958,3 +960,11 @@ export default function ProductOptimization() {
     </Page>
   );
 }
+
+// Surface failures on the page instead of bubbling to the app-level Shopify
+// boundary, which renders a bare "Application Error" above an empty box.
+export function ErrorBoundary() {
+  return <RouteError />;
+}
+
+export const headers = (headersArgs) => boundary.headers(headersArgs);
