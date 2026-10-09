@@ -61,18 +61,17 @@ async function fetchAllProducts(admin, cursor = null) {
             id
             title
             handle
-            images(first: 250) {
+            media(first: 250) {
               edges {
                 node {
-                  id
-                  url
-                  altText
-                  width
-                  height
+                  ... on MediaImage {
+                    id
+                    image { url }
+                  }
                 }
               }
             }
-            metafields(first: 20, namespace: "image_optimization") {
+            metafields(first: 250, namespace: "image_optimization") {
               edges {
                 node {
                   key
@@ -142,7 +141,24 @@ function processProductsData(products, timeRange) {
   let pageStats = [];
 
   products.forEach(product => {
-    const images = product.images.edges.map(edge => edge.node);
+    // Read MEDIA, not `images`.
+    //
+    // The optimizer keys every per-image metafield off a MediaImage GID
+    // (`gid://shopify/MediaImage/<n>` -> `image_<n>`). The `images` connection
+    // returns ProductImage GIDs instead, which carry entirely different numeric
+    // ids — so the lookup below never matched a single record and this whole
+    // page reported 0 optimized / 0 saved no matter how much work had been done.
+    const images = product.media.edges
+      .map(edge => edge.node)
+      .filter(node => node && node.id && node.image?.url)
+      .map(node => ({ id: node.id, url: node.image.url }));
+
+    // Indexed once per product: the previous `.find()` ran inside the per-image
+    // loop, which is 250 x 250 comparisons on a product with a full media set.
+    const recordsByKey = new Map(
+      product.metafields.edges.map(edge => [edge.node.key, edge.node])
+    );
+
     const productUrl = `/products/${product.handle}`;
 
     let pageImageCount = 0;
@@ -164,21 +180,34 @@ function processProductsData(products, timeRange) {
       formatStats[format].count++;
 
       const imageKey = `image_${image.id.split('/').pop()}`;
-      const optimizationData = product.metafields.edges.find(
-        edge => edge.node.key === imageKey
-      );
+      const optimizationData = recordsByKey.get(imageKey);
 
       if (!optimizationData) return;
 
       try {
-        const optData = JSON.parse(optimizationData.node.value);
+        const optData = JSON.parse(optimizationData.value);
         if (typeof optData.originalSizeMB !== 'number' || typeof optData.optimizedSizeMB !== 'number') {
           return;
         }
 
         const originalSizeMB = optData.originalSizeMB;
         const optimizedSizeMB = optData.optimizedSizeMB;
-        const updatedAt = new Date(optData.optimizedAt || optimizationData.node.updatedAt);
+        const updatedAt = new Date(optData.optimizedAt || optimizationData.updatedAt);
+        // A record with neither timestamp would give an Invalid Date, which
+        // slips past the range check below and then throws on toISOString() —
+        // silently losing the image into the catch. Treat it as undated and
+        // count it rather than dropping it.
+        if (Number.isNaN(updatedAt.getTime())) {
+          optimizedImages++;
+          totalOriginalSizeMB += originalSizeMB;
+          totalOptimizedSizeMB += optimizedSizeMB;
+          formatStats[format].originalSizeMB += originalSizeMB;
+          formatStats[format].optimizedSizeMB += optimizedSizeMB;
+          pageImageCount++;
+          pageSizeSaved += (originalSizeMB - optimizedSizeMB);
+          pageOriginalSize += originalSizeMB;
+          return;
+        }
 
         if (updatedAt < startDate) return;
 
