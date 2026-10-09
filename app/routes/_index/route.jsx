@@ -1,4 +1,4 @@
-import { redirect, Form, useLoaderData } from "react-router";
+import { redirect, Form, Link, useLoaderData } from "react-router";
 import { login } from "../../shopify.server";
 import styles from "./styles.module.css";
 
@@ -59,6 +59,11 @@ export default function App() {
             </span>
           </li>
         </ul>
+        <nav className={styles.footer}>
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/support">Support</Link>
+        </nav>
       </div>
     </div>
   );
