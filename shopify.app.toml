@@ -1,0 +1,36 @@
+name = "Altovexa"
+client_id = "b95895ce3118faea7e51fc858d93e7d7"
+application_url = "https://altovexa.onkra.online"
+embedded = true
+
+
+[access_scopes]
+scopes = "write_products,write_files"
+
+[access.admin]
+direct_api_mode = "online"
+
+[auth]
+redirect_urls = [
+  "https://altovexa.onkra.online/auth/callback",
+  "https://altovexa.onkra.online/auth/shopify/callback",
+  "https://altovexa.onkra.online/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2026-04"
+
+[[webhooks.subscriptions]]
+topics = [ "app/uninstalled" ]
+compliance_topics = [ "customers/redact", "customers/data_request", "shop/redact" ]
+uri = "https://altovexa.onkra.online/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = [ "products/create" ]
+uri = "https://altovexa.onkra.online/webhooks/products/create"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = false

@@ -1,0 +1,473 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   Altovexa brand theme — "Jade Depth"
+
+   A deliberately different visual identity from the other image apps in this
+   family: jade → deep-cyan on an ink-teal base, with amber reserved for
+   attention states. Element shapes are distinct too — squircle icon tiles,
+   top-bar accent cards, an ink hero with an accent rail, and a segmented
+   usage meter instead of a plain bar.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  --av-jade: #12b886;
+  --av-jade-dark: #0ca678;
+  --av-teal: #0c8599;
+  --av-deep: #095668;
+  --av-ink: #0a1f27;
+  --av-ink-2: #123240;
+  --av-amber: #f59f00;
+  --av-soft-1: #e6faf4;
+  --av-soft-2: #dcf3f7;
+  --av-tint: #f2fbf9;
+  --av-line: #dce9e6;
+  --av-muted: #5f7a79;
+  --av-grad: linear-gradient(135deg, #12b886 0%, #0c8599 100%);
+  --av-grad-dark: linear-gradient(135deg, #0ca678 0%, #095668 100%);
+  --av-grad-soft: linear-gradient(135deg, #e6faf4 0%, #dcf3f7 100%);
+  --av-grad-ink: linear-gradient(140deg, #0a1f27 0%, #123240 52%, #0b6e80 100%);
+  --av-ring: rgba(18, 184, 134, 0.22);
+  --av-radius: 14px;
+  --av-radius-lg: 20px;
+}
+
+/* ── Polaris primary buttons ────────────────────────────────────────────── */
+.Polaris-Button--variantPrimary {
+  background: var(--av-grad) !important;
+  border-color: var(--av-teal) !important;
+  box-shadow: 0 2px 8px rgba(12, 133, 153, 0.28) !important;
+}
+.Polaris-Button--variantPrimary:hover:not(:disabled) {
+  background: var(--av-grad-dark) !important;
+  border-color: var(--av-deep) !important;
+}
+.Polaris-Button--variantPrimary:active:not(:disabled) {
+  background: linear-gradient(135deg, #0b7a5c 0%, #06414f 100%) !important;
+}
+/* A disabled button must LOOK disabled. The rule above sets the gradient with
+   !important on every primary button, which would otherwise override Polaris's
+   own disabled styling — a button that cannot be clicked would look exactly
+   like one that can, and clicking it would appear to do nothing. */
+.Polaris-Button--variantPrimary:disabled,
+.Polaris-Button--variantPrimary[aria-disabled="true"] {
+  background: #ebebeb !important;
+  border-color: #ebebeb !important;
+  color: #8a8a8a !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+.Polaris-Button--variantPrimary:disabled .Polaris-Text--root,
+.Polaris-Button--variantPrimary[aria-disabled="true"] .Polaris-Text--root {
+  color: inherit !important;
+}
+
+/* ── Links, focus rings, checkboxes ─────────────────────────────────────── */
+.Polaris-Link { color: var(--av-teal) !important; }
+.Polaris-Link:hover { color: var(--av-deep) !important; }
+
+.Polaris-TextField__Input:focus {
+  border-color: var(--av-jade) !important;
+  box-shadow: 0 0 0 3px var(--av-ring) !important;
+}
+
+.Polaris-Checkbox__Input:checked + .Polaris-Checkbox__Backdrop {
+  background: var(--av-teal) !important;
+  border-color: var(--av-teal) !important;
+}
+
+/* ── Hero — ink panel with an accent rail (no gradient wash) ───────────── */
+.av-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--av-grad-ink);
+  border-radius: var(--av-radius-lg);
+  padding: 30px 34px 30px 40px;
+  margin-bottom: 20px;
+  color: #ffffff;
+  box-shadow:
+    0 1px 2px rgba(10, 31, 39, 0.12),
+    0 20px 44px -22px rgba(9, 86, 104, 0.6);
+}
+/* The accent rail is the signature element — a jade bar down the left edge. */
+.av-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 6px;
+  background: linear-gradient(180deg, #2ee6a8 0%, #12b886 48%, #0c8599 100%);
+}
+/* Fine dot grid — texture rather than a blob of light. */
+.av-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.11) 1px, transparent 1px);
+  background-size: 18px 18px;
+  mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 68%);
+  -webkit-mask-image: linear-gradient(100deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 68%);
+  pointer-events: none; /* decorative only — must not block the hero button */
+  z-index: -1;
+}
+.av-hero-copy { max-width: 620px; }
+.av-hero-copy h1 {
+  font-size: 29px;
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0 0 10px 0;
+  color: #ffffff;
+}
+.av-hero-copy p {
+  font-size: 14px;
+  line-height: 1.58;
+  color: rgba(226, 247, 243, 0.82);
+  margin: 0;
+}
+/* Wordmark tag — a squared bracket label, not a rounded pill. */
+.av-hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  align-self: flex-start;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8ff0cf;
+  background: rgba(18, 184, 134, 0.14);
+  border: 1px solid rgba(46, 230, 168, 0.3);
+  border-radius: 6px;
+  padding: 5px 11px;
+  margin: 0;
+}
+.av-hero-tag::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: #2ee6a8;
+  transform: rotate(45deg);
+}
+/* The hero is ink, so the jade gradient button reads clearly against it —
+   no need for the inverted white treatment. */
+.av-hero .Polaris-Button--variantPrimary {
+  background: linear-gradient(135deg, #2ee6a8 0%, #12b886 100%) !important;
+  border-color: #2ee6a8 !important;
+  color: #04303a !important;
+  box-shadow: 0 8px 20px -8px rgba(46, 230, 168, 0.65) !important;
+}
+.av-hero .Polaris-Button--variantPrimary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #52f0ba 0%, #1ac795 100%) !important;
+  border-color: #52f0ba !important;
+  color: #04303a !important;
+}
+.av-hero .Polaris-Button--variantPrimary:active:not(:disabled) {
+  background: #0ca678 !important;
+  color: #ffffff !important;
+}
+.av-hero .Polaris-Button--variantPrimary .Polaris-Text--root { color: inherit !important; }
+
+/* ── Metric cards — separate tiles, each with a top accent bar ─────────── */
+.av-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .av-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.av-metric {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--av-line);
+  border-radius: var(--av-radius);
+  padding: 16px 18px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  box-shadow: 0 1px 2px rgba(10, 31, 39, 0.04);
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+}
+.av-metric::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--av-grad);
+  opacity: 0.85;
+}
+.av-metric:hover {
+  transform: translateY(-2px);
+  border-color: #bfe3dc;
+  box-shadow: 0 10px 24px -14px rgba(9, 86, 104, 0.45);
+}
+.av-metric-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--av-muted);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+/* A fixed figure height keeps numbers and pills on one baseline across tiles. */
+.av-metric-value,
+.av-metric-pill {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  max-width: 100%;
+}
+.av-metric-value {
+  font-size: 27px;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--av-ink);
+  margin: 0;
+}
+/* Text-valued metrics read as a status pill, not a broken headline. */
+.av-metric-pill {
+  box-sizing: border-box;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 0 11px;
+  border-radius: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.av-metric-pill--brand     { background: var(--av-soft-1); color: #066b55; border: 1px solid #b6e8d8; }
+.av-metric-pill--success   { background: #e9f7f0; color: #0c6b45; border: 1px solid #cce9db; }
+.av-metric-pill--attention { background: #fff6e8; color: #7a4f00; border: 1px solid #f3dfb4; }
+.av-metric-pill--subdued   { background: #f1f5f4; color: #4b5f5e; border: 1px solid #e2eae8; }
+
+/* ── Segmented usage meter ─────────────────────────────────────────────── */
+.av-meter {
+  display: flex;
+  gap: 3px;
+  height: 10px;
+  width: 100%;
+}
+.av-meter-seg {
+  flex: 1;
+  border-radius: 3px;
+  background: #e7efed;
+  transition: background 0.25s ease;
+}
+.av-meter-seg.is-on { background: var(--av-jade); }
+.av-meter-seg.is-on:nth-child(n + 15) { background: var(--av-teal); }
+.av-meter.is-critical .av-meter-seg.is-on,
+.av-meter.is-critical .av-meter-seg.is-on:nth-child(n + 15) { background: #d7342b; }
+
+/* ── Tool tiles — 2-up grid with squircle icon + chips ─────────────────── */
+.av-tools {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 1000px) {
+  .av-tools { grid-template-columns: minmax(0, 1fr); }
+}
+.av-tool {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid var(--av-line);
+  border-radius: var(--av-radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  transition: box-shadow 0.2s, border-color 0.2s, transform 0.2s;
+}
+.av-tool:hover {
+  border-color: #b6e0d8;
+  box-shadow: 0 14px 30px -18px rgba(9, 86, 104, 0.5);
+  transform: translateY(-2px);
+}
+/* Locked tiles read as unavailable without going fully grey. */
+.av-tool.is-locked { background: var(--av-tint); }
+.av-tool-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+/* Squircle icon tile — the shape signature of this theme. */
+.av-tool-icon {
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 34% / 34%;
+  background: var(--av-grad-soft);
+  border: 1px solid #c8e9e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  line-height: 1;
+}
+.av-tool.is-locked .av-tool-icon {
+  background: #eef4f3;
+  border-color: #dfe9e7;
+  filter: grayscale(0.35);
+}
+.av-tool-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--av-ink);
+  margin: 0;
+}
+.av-tool-desc {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--av-muted);
+  margin: 0;
+  flex: 1 1 auto;
+}
+.av-tool-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+}
+.av-tool-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.av-tool-chip--on        { background: var(--av-soft-1); color: #066b55; border: 1px solid #b6e8d8; }
+.av-tool-chip--off       { background: #f1f5f4; color: #4b5f5e; border: 1px solid #e2eae8; }
+.av-tool-chip--attention { background: #fff6e8; color: #7a4f00; border: 1px solid #f3dfb4; }
+
+/* ── Page topbar — tinted band, squircle badge, right-hand meta ────────── */
+.av-topbar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(90deg, var(--av-soft-1) 0%, #ffffff 62%);
+  border: 1px solid var(--av-line);
+  border-radius: var(--av-radius);
+  padding: 14px 18px;
+  margin-bottom: 4px;
+}
+.av-topbar-badge {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 34% / 34%;
+  background: var(--av-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 21px;
+  line-height: 1;
+  box-shadow: 0 6px 14px -6px rgba(12, 133, 153, 0.6);
+}
+.av-topbar-text { min-width: 0; }
+.av-topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--av-ink);
+  margin: 0;
+}
+.av-topbar-sub {
+  font-size: 12px;
+  color: var(--av-muted);
+  margin: 3px 0 0 0;
+}
+.av-topbar-meta {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--av-deep);
+  background: #ffffff;
+  border: 1px solid #c8e9e2;
+  border-radius: 6px;
+  padding: 5px 10px;
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .av-topbar-meta { display: none; }
+}
+
+/* ── Stat row used on the optimizer / analytics pages ─────────────────── */
+.av-figure {
+  background: #ffffff;
+  border: 1px solid var(--av-line);
+  border-radius: var(--av-radius);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-width: 0;
+}
+.av-figure-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--av-muted);
+  margin: 0;
+}
+.av-figure-value {
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--av-ink);
+  margin: 0;
+}
+.av-figure-value--alert { color: #b3251d; }
+.av-figure-value--good { color: #066b55; }
+.av-figure-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+@media (max-width: 900px) {
+  .av-figure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.av-figure-grid--three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) {
+  .av-figure-grid--three { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Image run tiles ──────────────────────────────────────────────────── */
+.av-shot {
+  padding: 3px;
+  border-radius: 10px;
+  border: 2px solid var(--av-line);
+  background: #ffffff;
+  line-height: 0;
+}
+.av-shot--working { border-color: var(--av-jade); box-shadow: 0 0 0 3px var(--av-ring); }
+.av-shot--done { border-color: #0ca678; }
+.av-shot--failed { border-color: #d7342b; }
+.av-shot--skipped { border-color: #cbd9d6; }
